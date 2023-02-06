@@ -28,8 +28,9 @@ const generatePassword = async (password) => {
 router.post("/signup", protect, restrictTo("admin", "manager"), signup);
 
 router.post("/login", login);
+// protect, restrictTo("admin"),
 
-router.get("/", protect, restrictTo("admin"), async (req, res) => {
+router.get("/", async (req, res) => {
   const users = await getAllUsers();
   res.json({ users });
 });
