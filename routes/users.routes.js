@@ -11,6 +11,7 @@ import {
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import { ObjectId } from "mongodb";
 import { client } from "../index.js";
 import sendEmail from "../utils/email.js";
 
@@ -24,13 +25,13 @@ const generatePassword = async (password) => {
   return hashedPassword;
 };
 
-router.post("/signup", signup);
+router.post("/signup", protect, restrictTo("admin", "manager"), signup);
 
 router.post("/login", login);
 
-router.get("/", protect, restrictTo("admin", "manager"), async (req, res) => {
+router.get("/", protect, restrictTo("admin"), async (req, res) => {
   const users = await getAllUsers();
-  res.send(users);
+  res.json({ users });
 });
 
 router.post("/forgotPassword", async (req, res) => {
@@ -38,9 +39,10 @@ router.post("/forgotPassword", async (req, res) => {
   const { email } = req.body;
   const user = await getUserByEmail(email);
   if (!user) {
-    return res
-      .status(404)
-      .send({ message: "There is no user with this email address." });
+    return res.status(404).json({
+      status: "fail",
+      message: "There is no user with this email address.",
+    });
   }
 
   // Generate random token
@@ -59,11 +61,12 @@ router.post("/forgotPassword", async (req, res) => {
   // res.send(updateUser);
 
   // Send it to users email
-  const resetUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/users/resetPassword/${resetToken}`;
+  // const resetUrl = `${req.protocol}://${req.get(
+  //   "host"
+  //   )}/users/resetPassword/${resetToken}`;
+  const resetUrl = `${req.protocol}://localhost:3000/resetPassword/${resetToken}`;
 
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetUrl}.\nIf you didn't forget your password, please ignore this email!`;
+  const message = `Forgot your password? Click on this link to submit a new request to reset your password to: ${resetUrl} .\nIf you didn't forget your password, please ignore this email!`;
 
   try {
     await sendEmail({
@@ -118,7 +121,7 @@ router.put("/resetPassword/:token", async (req, res) => {
       { $set: { password: hashedPassword, passwordResetToken: "" } }
     );
 
-  const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+  const token = await jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
     expiresIn: "90d",
   });
   res.status(200).json({
@@ -130,6 +133,16 @@ router.put("/resetPassword/:token", async (req, res) => {
   });
 });
 
-router.delete("/:id");
+router.delete("/:id", protect, restrictTo("admin"), async (req, res) => {
+  const { id } = req.params;
+  const deletedUser = await client
+    .db("crm")
+    .collection("users")
+    .deleteOne({ _id: ObjectId(id) });
+
+  deletedUser
+    ? res.status(204).send({ message: "success" })
+    : res.status(404).send({ message: "User not found" });
+});
 
 export default router;
