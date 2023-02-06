@@ -1,6 +1,6 @@
 import { client } from "../index.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { ObjectId } from "mongodb";
 
 // Password generator function

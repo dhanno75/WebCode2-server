@@ -9,7 +9,7 @@ import {
   signup,
 } from "../services/users.services.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { ObjectId } from "mongodb";
 import { client } from "../index.js";
@@ -17,13 +17,20 @@ import sendEmail from "../utils/email.js";
 
 const router = express.Router();
 
-// Password generator function
+// Password generator function using bcrypt
 const generatePassword = async (password) => {
   const NO_OF_ROUNDS = 10;
   const salt = await bcrypt.genSalt(NO_OF_ROUNDS);
   const hashedPassword = await bcrypt.hash(password, salt);
   return hashedPassword;
 };
+
+// Password generator function using bcryptjs
+// const passwordHashing = async (password) => {
+//   const NO_OF_ROUNDS = 10;
+//   const salt = await bcryptjs.genSalt(NO_OF_ROUNDS);
+//   const hashedPassword = await bcryptjs.hash(password, salt);
+// };
 
 router.post("/signup", protect, restrictTo("admin", "manager"), signup);
 
