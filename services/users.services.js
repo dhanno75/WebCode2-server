@@ -11,6 +11,26 @@ const generatePassword = async (password) => {
   return hashedPassword;
 };
 
+const createSendToken = (user, statusCode, res) => {
+  const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+    expiresIn: "90d",
+  });
+
+  const cookieOptions = {
+    expiresIn: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    httpOnly: true,
+  };
+
+  res.cookie("jwt", token, cookieOptions);
+
+  res.status(statusCode).json({
+    token,
+    data: {
+      user,
+    },
+  });
+};
+
 export const createUser = async (data) => {
   return await client.db("crm").collection("users").insertOne(data);
 };
@@ -71,6 +91,8 @@ export const login = async (req, res, next) => {
       const token = jwt.sign({ id: userFromDB._id }, process.env.SECRET_KEY, {
         expiresIn: "90d",
       });
+
+      // createSendToken(userFromDB, 200, res);
       res.status(200).json({
         status: "success",
         message: "Successfull Login",
@@ -128,3 +150,6 @@ export const restrictTo = (...roles) => {
     next();
   };
 };
+
+// export const isLoggedIn = async (req, res, next) => {
+// }

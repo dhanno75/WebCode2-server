@@ -37,6 +37,15 @@ const sendEmail = async (options) => {
     },
   });
 
+  const transport = nodemailer.createTransport({
+    host: "smtp.sendgrid.net",
+    port: 587,
+    auth: {
+      user: "apikey",
+      pass: process.env.SENDGRID_PASSWORD,
+    },
+  });
+
   // 2) Define the email options
   const mailOptions = {
     from: "Dhananjay P <pdhananjay@gmail.com>",

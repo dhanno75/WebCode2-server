@@ -94,7 +94,7 @@ router.post("/forgotPassword", async (req, res) => {
       .updateOne({ _id: user._id }, { $set: { passwordResetToken: "" } });
 
     return res.status(500).send({
-      status: 500,
+      status: "fail",
       message: "There was an error sending an email. Try again later.",
     });
   }
@@ -112,7 +112,7 @@ router.put("/resetPassword/:token", async (req, res) => {
     .db("crm")
     .collection("users")
     .findOne({ passwordResetToken: hashedToken });
-
+  console.log(user);
   // If the token has not expired, and there is user, set the new password
   if (!user) {
     return res.status(400, "Token is invalid or expired");
@@ -135,9 +135,7 @@ router.put("/resetPassword/:token", async (req, res) => {
   res.status(200).json({
     status: "success",
     token,
-    data: {
-      user,
-    },
+    data: user,
   });
 });
 
