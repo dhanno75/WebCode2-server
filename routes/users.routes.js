@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createUser,
+  updateUser,
   getAllUsers,
   getUserByEmail,
   login,
@@ -25,13 +26,6 @@ const generatePassword = async (password) => {
   return hashedPassword;
 };
 
-// Password generator function using bcryptjs
-// const passwordHashing = async (password) => {
-//   const NO_OF_ROUNDS = 10;
-//   const salt = await bcryptjs.genSalt(NO_OF_ROUNDS);
-//   const hashedPassword = await bcryptjs.hash(password, salt);
-// };
-
 router.post("/signup", protect, restrictTo("admin", "manager"), signup);
 
 router.post("/login", login);
@@ -39,7 +33,16 @@ router.post("/login", login);
 
 router.get("/", async (req, res) => {
   const users = await getAllUsers();
-  res.json({ users });
+  res.status(200).json({ users });
+});
+
+router.put("/:id", async (req, res) => {
+  let id = req.params;
+  const data = req.body;
+
+  const result = await updateUser(id, data);
+
+  res.send(result);
 });
 
 router.post("/forgotPassword", async (req, res) => {

@@ -1,0 +1,93 @@
+[
+  {
+    "leadname": "Taryn Kiera",
+    "company": "Devcast",
+    "email": "taryn@devcast.io",
+    "status": "New",
+    "serviceRequest": "Open"
+  },
+  {
+    "leadname": "Jonathan Spheres",
+    "company": "Oracle",
+    "email": "Joathan@oracle.com",
+    "status": "Confirmed",
+    "serviceRequest": "Completed"
+  },
+  {
+    "leadname": "Priya K",
+    "company": "Google",
+    "email": "priya@example.com",
+    "status": "Contacted",
+    "serviceRequest": "In process"
+  },
+  {
+    "leadname": "Jane Doe",
+    "company": "salesforce",
+    "email": "jane@example.com",
+    "status": "Qualified",
+    "serviceRequest": "Created"
+  },
+  {
+    "leadname": "Will Snapes",
+    "company": "ougmento",
+    "email": "will@example.com",
+    "status": "Canceled",
+    "serviceRequest": "Canceled"
+  },
+  {
+    "leadname": "Kathryn Jones",
+    "company": "Schwartz",
+    "email": "kathryn@example.com",
+    "status": "Lost",
+    "serviceRequest": "Canceled"
+  },
+  {
+    "leadname": "Luke Cage",
+    "company": "facebook",
+    "email": "luke@example.com",
+    "status": "New",
+    "serviceRequest": "Created"
+  },
+  {
+    "leadname": "Barry Allen",
+    "company": "Zoop",
+    "email": "barry@example.com",
+    "status": "Confirmed",
+    "serviceRequest": "Open"
+  },
+  {
+    "leadname": "Bruce Wayne",
+    "company": "Wayne Enterprises",
+    "email": "wayne@example.com",
+    "status": "Confirmed",
+    "serviceRequest": "Released"
+  },
+  {
+    "leadname": "John Dutton",
+    "company": "meta",
+    "email": "john@example.com",
+    "status": "Qualified",
+    "serviceRequest": "In process"
+  },
+  {
+    "leadname": "Parvati Sharma",
+    "company": "zoom",
+    "email": "parvati@example.com",
+    "status": "Confirmed",
+    "serviceRequest": "Created"
+  },
+  {
+    "leadname": "Anjali Mehta",
+    "company": "Oracle",
+    "email": "anjali@example.com",
+    "status": "New",
+    "serviceRequest": "Open"
+  },
+  {
+    "leadname": "Shreya Das",
+    "company": "netflix",
+    "email": "shreya@example.com",
+    "status": "Confirmed",
+    "serviceRequest": "In process"
+  }
+]

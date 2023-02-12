@@ -5,6 +5,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import { MongoClient } from "mongodb";
 import userRouter from "./routes/users.routes.js";
+import leadsRouter from "./routes/leads.routes.js";
 
 dotenv.config();
 
@@ -39,6 +40,9 @@ app.get("/", (req, res) => {
 
 // User route
 app.use("/users", userRouter);
+
+// Leads route
+app.use("/leads", leadsRouter);
 
 app.listen(PORT, () =>
   console.log(`The server is connected to port: ${PORT} ✨✨`)

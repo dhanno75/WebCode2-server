@@ -43,8 +43,15 @@ export const getAllUsers = async () => {
   return await client.db("crm").collection("users").find({}).toArray();
 };
 
+export const updateUser = async (id, data) => {
+  return await client
+    .db("crm")
+    .collection("users")
+    .updateOne({ _id: ObjectId(id) }, { $set: data });
+};
+
 export const signup = async (req, res, next) => {
-  const { firstname, lastname, email, password, role } = req.body;
+  const { firstname, lastname, email, password, role, leads } = req.body;
 
   const userFromDB = await getUserByEmail(email);
 
@@ -61,6 +68,7 @@ export const signup = async (req, res, next) => {
       firstname,
       lastname,
       role,
+      leads,
     });
 
     res.status(200).json({
@@ -97,7 +105,7 @@ export const login = async (req, res, next) => {
         status: "success",
         message: "Successfull Login",
         token,
-        role: userFromDB.role,
+        user: userFromDB,
       });
     } else {
       res.status(401).json({
