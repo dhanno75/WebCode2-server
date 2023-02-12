@@ -85,6 +85,7 @@ export const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   const userFromDB = await getUserByEmail(email);
+  console.log(userFromDB.role);
 
   if (!userFromDB) {
     res.status(401).json({
