@@ -75,7 +75,9 @@ router.post("/forgotPassword", async (req, res) => {
   // const resetUrl = `${req.protocol}://${req.get(
   //   "host"
   //   )}/users/resetPassword/${resetToken}`;
-  const resetUrl = `${req.protocol}://localhost:3000/resetPassword/${resetToken}`;
+  // const resetUrl = `${req.protocol}://localhost:3000/resetPassword/${resetToken}`;
+
+  const resetUrl = `${req.protocol}://web-code2-client.vercel.app/resetPassword/${resetToken}`;
 
   const message = `Forgot your password? Click on this link to submit a new request to reset your password to: ${resetUrl} .\nIf you didn't forget your password, please ignore this email!`;
 
