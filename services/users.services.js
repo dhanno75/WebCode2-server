@@ -84,13 +84,9 @@ export const login = async (req, res, next) => {
     const passwordCheck = await bcrypt.compare(password, storedPassword);
 
     if (passwordCheck) {
-      const token = jwt.sign(
-        { id: userFromDB._id },
-        process.env.JWT_SECRET_KEY,
-        {
-          expiresIn: "90d",
-        }
-      );
+      const token = jwt.sign({ id: userFromDB._id }, process.env.SECRET_KEY, {
+        expiresIn: "90d",
+      });
 
       // createSendToken(userFromDB, 200, res);
       res.status(200).json({
@@ -112,7 +108,7 @@ export const protect = async (req, res, next) => {
   try {
     const token = req.header("token");
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
     console.log(decoded);
 
     const currentUser = await client
