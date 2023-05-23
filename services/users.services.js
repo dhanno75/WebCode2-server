@@ -11,26 +11,6 @@ const generatePassword = async (password) => {
   return hashedPassword;
 };
 
-const createSendToken = (user, statusCode, res) => {
-  const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
-    expiresIn: "90d",
-  });
-
-  const cookieOptions = {
-    expiresIn: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-    httpOnly: true,
-  };
-
-  res.cookie("jwt", token, cookieOptions);
-
-  res.status(statusCode).json({
-    token,
-    data: {
-      user,
-    },
-  });
-};
-
 export const createUser = async (data) => {
   return await client.db("crm").collection("users").insertOne(data);
 };
@@ -41,6 +21,13 @@ export const getUserByEmail = async (email) => {
 
 export const getAllUsers = async () => {
   return await client.db("crm").collection("users").find({}).toArray();
+};
+
+export const getUser = async (id) => {
+  return await client
+    .db("crm")
+    .collection("users")
+    .findOne({ _id: ObjectId(id) });
 };
 
 export const updateUser = async (id, data) => {
@@ -97,9 +84,13 @@ export const login = async (req, res, next) => {
     const passwordCheck = await bcrypt.compare(password, storedPassword);
 
     if (passwordCheck) {
-      const token = jwt.sign({ id: userFromDB._id }, process.env.SECRET_KEY, {
-        expiresIn: "90d",
-      });
+      const token = jwt.sign(
+        { id: userFromDB._id },
+        process.env.JWT_SECRET_KEY,
+        {
+          expiresIn: "90d",
+        }
+      );
 
       // createSendToken(userFromDB, 200, res);
       res.status(200).json({
@@ -118,38 +109,30 @@ export const login = async (req, res, next) => {
 };
 
 export const protect = async (req, res, next) => {
-  let token;
+  try {
+    const token = req.header("token");
 
-  // Getting the token and check whether it is there
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    console.log(decoded);
+
+    const currentUser = await client
+      .db("crm")
+      .collection("users")
+      .findOne({ _id: ObjectId(decoded.id) });
+    console.log(currentUser);
+
+    if (!currentUser) {
+      res.status(401).json({
+        status: "fail",
+        message: "The user belonging to the token does not exist",
+      });
+    }
+
+    req.user = currentUser;
+    next();
+  } catch (err) {
+    res.status(401).send({ message: err.message });
   }
-
-  if (!token) {
-    res.status(400).send({ message: "No token found" });
-  }
-  // console.log(process.env.JWT_SECRET);
-  // Verifying the token
-  // const decoded = await promisify(jwt.verify)(token, process.env.SECRET_KEY);
-  const decoded = jwt.verify(token, process.env.SECRET_KEY);
-
-  // Check if user still exists
-  const currentUser = await client
-    .db("crm")
-    .collection("users")
-    .findOne({ _id: ObjectId(decoded.id) });
-
-  if (!currentUser) {
-    res
-      .status(401)
-      .send({ message: "The user beloging to the token does not exist" });
-  }
-
-  req.user = currentUser;
-  next();
 };
 
 export const restrictTo = (...roles) => {
