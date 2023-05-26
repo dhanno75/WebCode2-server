@@ -34,5 +34,8 @@ router.get("/:userId", async (req, res) => {
   let { userId } = req.params;
 
   const result = await userLeads(userId);
-  res.send(result);
+  res.status(200).json({
+    status: "success",
+    data: result,
+  });
 });

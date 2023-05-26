@@ -49,12 +49,17 @@ router.get("/:id", async (req, res) => {
 });
 
 router.put("/:id", protect, async (req, res) => {
-  let id = req.params;
+  console.log(req.params);
+  console.log(req.body);
+  let id = req.params.id;
   const data = req.body;
 
   const result = await updateUser(id, data);
 
-  res.send(result);
+  res.status(200).json({
+    status: "success",
+    data: result,
+  });
 });
 
 router.post("/forgotPassword", async (req, res) => {
