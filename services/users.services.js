@@ -72,7 +72,6 @@ export const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   const userFromDB = await getUserByEmail(email);
-  console.log(userFromDB.role);
 
   if (!userFromDB) {
     res.status(401).json({
@@ -109,13 +108,11 @@ export const protect = async (req, res, next) => {
     const token = req.header("token");
 
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    console.log(decoded);
 
     const currentUser = await client
       .db("crm")
       .collection("users")
       .findOne({ _id: ObjectId(decoded.id) });
-    console.log(currentUser);
 
     if (!currentUser) {
       res.status(401).json({

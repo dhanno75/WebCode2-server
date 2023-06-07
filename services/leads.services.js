@@ -5,9 +5,9 @@ export const getAllLeads = async () => {
   return await client.db("crm").collection("leads").find({}).toArray();
 };
 
-export const createLeads = async (data, req ) => {
+export const createLeads = async (data, req) => {
   const lead = await client.db("crm").collection("leads").insertOne(data);
-  console.log(lead.insertedId);
+
   await client
     .db("crm")
     .collection("users")

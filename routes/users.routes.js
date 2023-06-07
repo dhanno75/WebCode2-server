@@ -48,8 +48,6 @@ router.get("/:id", async (req, res) => {
 });
 
 router.put("/:id", protect, async (req, res) => {
-  console.log(req.params);
-  console.log(req.body);
   let id = req.params.id;
   const data = req.body;
 
@@ -124,7 +122,6 @@ router.post("/forgotPassword", async (req, res) => {
 
 router.put("/resetPassword/:token", async (req, res) => {
   // get user based on the token
-  console.log(req.params);
   const hashedToken = crypto
     .createHash("sha256")
     .update(req.params.token)
@@ -134,7 +131,7 @@ router.put("/resetPassword/:token", async (req, res) => {
     .db("crm")
     .collection("users")
     .findOne({ passwordResetToken: hashedToken });
-  console.log(user);
+
   // If the token has not expired, and there is user, set the new password
   if (!user) {
     return res.status(400, "Token is invalid or expired");
