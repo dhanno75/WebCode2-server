@@ -15,7 +15,7 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { ObjectId } from "mongodb";
 import { client } from "../index.js";
-import sendEmail from "../utils/email.js";
+import { sendEmail } from "../utils/email.js";
 
 const router = express.Router();
 
@@ -34,6 +34,18 @@ router.post("/login", login);
 router.get("/", async (req, res) => {
   const users = await getAllUsers();
   res.status(200).json({ users });
+});
+
+router.get("/role", protect, async (req, res) => {
+  const managers = await client
+    .db("crm")
+    .collection("users")
+    .find({ role: "manager" });
+
+  res.status(200).json({
+    status: "success",
+    data: managers,
+  });
 });
 
 router.get("/:id", async (req, res) => {
