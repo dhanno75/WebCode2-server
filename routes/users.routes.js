@@ -44,7 +44,7 @@ router.get("/manager", protect, async (req, res) => {
     .toArray();
 
   managers = managers.map((manager) => {
-    return { id: manager._id, mname: manager.firstname };
+    return { id: manager._id, manager_name: manager.firstname };
   });
 
   res.status(200).json({
