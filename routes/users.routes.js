@@ -36,14 +36,20 @@ router.get("/", async (req, res) => {
   res.status(200).json({ users });
 });
 
-router.get("/role", protect, async (req, res) => {
-  const managers = await client
+router.get("/manager", protect, async (req, res) => {
+  let managers = await client
     .db("crm")
     .collection("users")
-    .find({ role: "manager" });
+    .find({ role: "manager" })
+    .toArray();
+
+  managers = managers.map((manager) => {
+    return { id: manager._id, mname: manager.firstname };
+  });
 
   res.status(200).json({
     status: "success",
+    result: managers.length,
     data: managers,
   });
 });
