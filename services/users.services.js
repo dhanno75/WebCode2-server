@@ -38,7 +38,8 @@ export const updateUser = async (id, data) => {
 };
 
 export const signup = async (req, res, next) => {
-  const { firstname, lastname, email, password, role, leads } = req.body;
+  const { firstname, lastname, email, password, role, leads, manager } =
+    req.body;
 
   const userFromDB = await getUserByEmail(email);
 
@@ -56,6 +57,7 @@ export const signup = async (req, res, next) => {
       lastname,
       role,
       leads,
+      manager,
     });
 
     res.status(200).json({
