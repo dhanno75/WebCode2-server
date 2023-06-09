@@ -57,7 +57,7 @@ export const signup = async (req, res, next) => {
       lastname,
       role,
       leads,
-      manager,
+      manager: ObjectId(manager),
     });
 
     res.status(200).json({

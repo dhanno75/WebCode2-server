@@ -16,12 +16,7 @@ router.get("/", async (req, res) => {
   res.status(200).json({ leads });
 });
 
-router.post("/", protect, async (req, res) => {
-  const data = req.body;
-
-  const leads = await createLeads(data, req);
-  res.status(200).json({ leads });
-});
+router.post("/", protect, createLeads);
 
 router.put("/:id", async (req, res) => {
   let id = req.params;
