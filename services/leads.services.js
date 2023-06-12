@@ -8,7 +8,7 @@ export const getAllLeads = async () => {
 
 export const createLeads = async (req, res) => {
   const data = req.body;
-  const lead = await client.db("crm").collection("leads").insertOne(data);
+  const lead = await client.db("crm").collection("leads").insertOne({ data });
 
   await client
     .db("crm")
