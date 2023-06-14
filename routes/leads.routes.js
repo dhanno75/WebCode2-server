@@ -18,6 +18,16 @@ router.get("/", async (req, res) => {
     .json({ status: "success", length: leads.length, data: leads });
 });
 
+router.get("/getLeadsPerMonth", async (req, res) => {
+  let leads = await getAllLeads();
+
+  res.status(200).json({
+    status: "success",
+    length: leads.length,
+    data: leads,
+  });
+});
+
 router.post("/", protect, createLeads);
 
 router.put("/:id", async (req, res) => {
