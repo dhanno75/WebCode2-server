@@ -6,6 +6,32 @@ export const getAllLeads = async () => {
   return await client.db("crm").collection("leads").find({}).toArray();
 };
 
+export const getLeadsPerMonth = async (req) => {
+  const currentUser = req.user;
+  let leads;
+  if (currentUser.role === "admin" || currentUser.role === "manager") {
+    leads = await client
+      .db("crm")
+      .collection("user")
+      .aggregate([
+        {
+          $group: {
+            _id: {
+              $month: "$createdAt",
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: 1,
+          },
+        },
+      ])
+      .toArray();
+  }
+  return leads;
+};
+
 export const createLeads = async (req, res) => {
   const data = req.body;
   const lead = await client

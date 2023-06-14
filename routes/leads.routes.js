@@ -4,6 +4,7 @@ import {
   createLeads,
   updateLead,
   userLeads,
+  getLeadsPerMonth,
 } from "../services/leads.services.js";
 import { protect } from "../services/users.services.js";
 import { ObjectId } from "mongodb";
@@ -18,8 +19,8 @@ router.get("/", async (req, res) => {
     .json({ status: "success", length: leads.length, data: leads });
 });
 
-router.get("/getLeadsPerMonth", async (req, res) => {
-  let leads = await getAllLeads();
+router.get("/getLeadsPerMonth", protect, async (req, res) => {
+  let leads = await getLeadsPerMonth();
 
   res.status(200).json({
     status: "success",
