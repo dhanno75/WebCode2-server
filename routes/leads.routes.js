@@ -19,15 +19,7 @@ router.get("/", async (req, res) => {
     .json({ status: "success", length: leads.length, data: leads });
 });
 
-router.get("/getLeadsPerMonth", protect, async (req, res) => {
-  let leads = await getLeadsPerMonth();
-
-  res.status(200).json({
-    status: "success",
-    length: leads.length,
-    data: leads,
-  });
-});
+router.get("/getLeadsPerMonth", protect, getLeadsPerMonth);
 
 router.post("/", protect, createLeads);
 

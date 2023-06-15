@@ -6,18 +6,21 @@ export const getAllLeads = async () => {
   return await client.db("crm").collection("leads").find({}).toArray();
 };
 
-export const getLeadsPerMonth = async (req) => {
+export const getLeadsPerMonth = async (req, res) => {
   const currentUser = req.user;
   let leads;
   if (currentUser.role === "admin" || currentUser.role === "manager") {
     leads = await client
       .db("crm")
-      .collection("user")
+      .collection("leads")
       .aggregate([
         {
           $group: {
             _id: {
               $month: "$createdAt",
+            },
+            leadsAddMonth: {
+              $sum: 1,
             },
           },
         },
@@ -29,7 +32,11 @@ export const getLeadsPerMonth = async (req) => {
       ])
       .toArray();
   }
-  return leads;
+
+  res.status(200).json({
+    status: "success",
+    data: leads,
+  });
 };
 
 export const createLeads = async (req, res) => {
