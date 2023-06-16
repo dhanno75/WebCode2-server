@@ -31,6 +31,33 @@ export const getLeadsPerMonth = async (req, res) => {
         },
       ])
       .toArray();
+  } else {
+    leads = await client
+      .db("crm")
+      .collection("leads")
+      .aggregate([
+        {
+          $match: {
+            createdByUser: ObjectId(currentUser._id),
+          },
+        },
+        {
+          $group: {
+            _id: {
+              $month: "$createdAt",
+            },
+            leadsAddMonth: {
+              $sum: 1,
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: 1,
+          },
+        },
+      ])
+      .toArray();
   }
 
   res.status(200).json({
@@ -44,7 +71,11 @@ export const createLeads = async (req, res) => {
   const lead = await client
     .db("crm")
     .collection("leads")
-    .insertOne({ ...data, createdAt: new Date(Date.now()) });
+    .insertOne({
+      ...data,
+      createdAt: new Date(Date.now()),
+      createdByUser: req.user._id,
+    });
 
   await client
     .db("crm")
