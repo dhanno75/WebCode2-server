@@ -12,12 +12,7 @@ import { client } from "../index.js";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  let leads = await getAllLeads();
-  res
-    .status(200)
-    .json({ status: "success", length: leads.length, data: leads });
-});
+router.get("/", protect, getAllLeads);
 
 router.get("/getLeadsPerMonth", protect, getLeadsPerMonth);
 

@@ -2,8 +2,24 @@ import { client } from "../index.js";
 import { ObjectId } from "mongodb";
 import { leadCreationEmail } from "../utils/email.js";
 
-export const getAllLeads = async () => {
-  return await client.db("crm").collection("leads").find({}).toArray();
+export const getAllLeads = async (req, res) => {
+  const currentUser = req.user;
+  let leads;
+  if (currentUser.role === "admin" || currentUser.role === "manager") {
+    leads = await client.db("crm").collection("leads").find({}).toArray();
+  } else {
+    leads = await client
+      .db("crm")
+      .collection("leads")
+      .find({ createdByUser: ObjectId(req.user._id) })
+      .toArray();
+  }
+
+  res.status(200).json({
+    status: "success",
+    length: leads.length,
+    data: leads,
+  });
 };
 
 export const getLeadsPerMonth = async (req, res) => {
