@@ -93,11 +93,6 @@ export const createLeads = async (req, res) => {
       createdByUser: req.user._id,
     });
 
-  await client
-    .db("crm")
-    .collection("users")
-    .updateOne({ _id: req.user._id }, { $push: { leads: lead.insertedId } });
-
   const manager = await client
     .db("crm")
     .collection("users")
@@ -144,19 +139,53 @@ export const updateLead = async (id, data) => {
     .updateOne({ _id: ObjectId(id) }, { $set: data });
 };
 
-export const userLeads = async (id) => {
+export const userLeads = async (req, res) => {
+  let { userId } = req.params;
   const user = await client
     .db("crm")
     .collection("users")
-    .findOne({ _id: ObjectId(id) });
-  const leadsData = await Promise.all(
-    user.leads.map(async (el) => {
-      return await client
-        .db("crm")
-        .collection("leads")
-        .findOne({ _id: ObjectId(el) });
-    })
-  );
+    .findOne({ _id: ObjectId(userId) });
+  // const leadsData = await Promise.all(
+  //   user.leads.map(async (el) => {
+  //     return await client
+  //       .db("crm")
+  //       .collection("leads")
+  //       .findOne({ _id: ObjectId(el) });
+  //   })
+  // );
 
-  return leadsData;
+  const leadsData = await client
+    .db("crm")
+    .collection("leads")
+    .find({ createdByUser: ObjectId(user._id) })
+    .toArray();
+
+  res.status(200).json({
+    status: "success",
+    data: leadsData,
+  });
+};
+
+export const deleteLead = async (req, res) => {
+  let uid = req.user._id;
+  let { id } = req.params;
+  const leadExistInUser = client
+    .db("crm")
+    .collection("leads")
+    .findOne({ _id: ObjectId(id) });
+
+  if (leadExistInUser) {
+    await client
+      .db("crm")
+      .collection("leads")
+      .deleteOne({ _id: ObjectId(id) });
+  } else {
+    res.status(401).json({
+      status: "fail",
+      message: "There is no lead with this ID.",
+    });
+  }
+  res.status(204).json({
+    message: "success",
+  });
 };

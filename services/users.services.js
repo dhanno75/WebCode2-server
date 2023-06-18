@@ -38,8 +38,7 @@ export const updateUser = async (id, data) => {
 };
 
 export const signup = async (req, res, next) => {
-  const { firstname, lastname, email, password, role, leads, manager } =
-    req.body;
+  const { firstname, lastname, email, password, role, manager } = req.body;
 
   const userFromDB = await getUserByEmail(email);
 
@@ -56,7 +55,6 @@ export const signup = async (req, res, next) => {
       firstname,
       lastname,
       role,
-      leads: [],
       manager: ObjectId(manager),
     });
 
